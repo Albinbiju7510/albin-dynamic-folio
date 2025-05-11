@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { usePortfolio } from '@/context/PortfolioContext';
 import { Menu, X, Github, Linkedin, Mail, Instagram, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
+import { useTranslation } from '@/context/TranslationContext';
 
 const Header: React.FC = () => {
   const { data } = usePortfolio();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { translate } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +33,11 @@ const Header: React.FC = () => {
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
+
+  // Updated social media links
+  const githubLink = "https://github.com/Albinbiju7510";
+  const instagramLink = "https://www.instagram.com/mr.___infinity__";
+  const emailAddress = "albinbiju75100@gmail.com";
 
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 dark:bg-purple-600/10 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
@@ -59,31 +66,37 @@ const Header: React.FC = () => {
             onClick={() => scrollToSection('about')}
             className="text-foreground/80 hover:text-purple-500 transition-colors"
           >
-            About
+            {translate('About')}
           </button>
           <button
             onClick={() => scrollToSection('skills')}
             className="text-foreground/80 hover:text-purple-500 transition-colors"
           >
-            Skills
+            {translate('Skills')}
           </button>
           <button
             onClick={() => scrollToSection('projects')} 
             className="text-foreground/80 hover:text-purple-500 transition-colors"
           >
-            Projects
+            {translate('Projects')}
+          </button>
+          <button
+            onClick={() => scrollToSection('gallery')}
+            className="text-foreground/80 hover:text-purple-500 transition-colors"
+          >
+            {translate('Gallery')}
           </button>
           <button
             onClick={() => scrollToSection('leadership')}
             className="text-foreground/80 hover:text-purple-500 transition-colors"
           >
-            Leadership
+            {translate('Leadership')}
           </button>
           <button
             onClick={() => scrollToSection('contact')}
             className="text-foreground/80 hover:text-purple-500 transition-colors"
           >
-            Contact
+            {translate('Contact')}
           </button>
         </nav>
 
@@ -102,22 +115,16 @@ const Header: React.FC = () => {
             )}
           </Button>
           
-          {data.contact.github && (
-            <a href={data.contact.github} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
-              <Github className="h-5 w-5" />
-            </a>
-          )}
-          {data.contact.linkedin && (
-            <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
-              <Linkedin className="h-5 w-5" />
-            </a>
-          )}
-          {data.contact.instagram && (
-            <a href={data.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
-              <Instagram className="h-5 w-5" />
-            </a>
-          )}
-          <a href={`mailto:${data.contact.email}`} className="text-foreground/70 hover:text-purple-500 transition-colors">
+          <a href={githubLink} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+            <Github className="h-5 w-5" />
+          </a>
+          <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+            <Linkedin className="h-5 w-5" />
+          </a>
+          <a href={instagramLink} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+            <Instagram className="h-5 w-5" />
+          </a>
+          <a href={`mailto:${emailAddress}`} className="text-foreground/70 hover:text-purple-500 transition-colors">
             <Mail className="h-5 w-5" />
           </a>
         </div>
@@ -131,31 +138,37 @@ const Header: React.FC = () => {
               onClick={() => scrollToSection('about')}
               className="py-2 text-foreground/80 hover:text-purple-500 transition-colors"
             >
-              About
+              {translate('About')}
             </button>
             <button
               onClick={() => scrollToSection('skills')}
               className="py-2 text-foreground/80 hover:text-purple-500 transition-colors"
             >
-              Skills
+              {translate('Skills')}
             </button>
             <button
               onClick={() => scrollToSection('projects')}
               className="py-2 text-foreground/80 hover:text-purple-500 transition-colors"
             >
-              Projects
+              {translate('Projects')}
+            </button>
+            <button
+              onClick={() => scrollToSection('gallery')}
+              className="py-2 text-foreground/80 hover:text-purple-500 transition-colors"
+            >
+              {translate('Gallery')}
             </button>
             <button
               onClick={() => scrollToSection('leadership')}
               className="py-2 text-foreground/80 hover:text-purple-500 transition-colors"
             >
-              Leadership
+              {translate('Leadership')}
             </button>
             <button
               onClick={() => scrollToSection('contact')}
               className="py-2 text-foreground/80 hover:text-purple-500 transition-colors"
             >
-              Contact
+              {translate('Contact')}
             </button>
             
             <Button
@@ -167,34 +180,28 @@ const Header: React.FC = () => {
               {theme === 'dark' ? (
                 <>
                   <Sun className="h-5 w-5 mr-2" />
-                  <span>Light Mode</span>
+                  <span>{translate('Light Mode')}</span>
                 </>
               ) : (
                 <>
                   <Moon className="h-5 w-5 mr-2" />
-                  <span>Dark Mode</span>
+                  <span>{translate('Dark Mode')}</span>
                 </>
               )}
             </Button>
             
             {/* Social Icons - Mobile */}
             <div className="flex items-center space-x-4 pt-2">
-              {data.contact.github && (
-                <a href={data.contact.github} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
-                  <Github className="h-5 w-5" />
-                </a>
-              )}
-              {data.contact.linkedin && (
-                <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
-                  <Linkedin className="h-5 w-5" />
-                </a>
-              )}
-              {data.contact.instagram && (
-                <a href={data.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
-                  <Instagram className="h-5 w-5" />
-                </a>
-              )}
-              <a href={`mailto:${data.contact.email}`} className="text-foreground/70 hover:text-purple-500 transition-colors">
+              <a href={githubLink} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+                <Github className="h-5 w-5" />
+              </a>
+              <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a href={instagramLink} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+                <Instagram className="h-5 w-5" />
+              </a>
+              <a href={`mailto:${emailAddress}`} className="text-foreground/70 hover:text-purple-500 transition-colors">
                 <Mail className="h-5 w-5" />
               </a>
             </div>
