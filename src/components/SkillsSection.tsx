@@ -89,8 +89,7 @@ const SkillsSection: React.FC = () => {
               </div>
               <Progress 
                 value={progressValues[skill.name] || 0} 
-                className="h-2 bg-secondary"
-                indicatorClassName="bg-gradient-to-r from-purple-300 to-purple-500"
+                className="h-2 bg-secondary bg-gradient-to-r from-purple-300 to-purple-500"
               />
             </div>
           ))}
