@@ -49,7 +49,28 @@ const defaultPortfolioData: PortfolioData = {
       description: "Developed a real-time multi-user chat application using TCP for seamless communication between users.",
       technologies: ["Python", "Sockets", "TCP/IP"],
       image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&h=400&q=80"
+    },
+    {
+      id: "photography",
+      title: "Photography",
+      description: "Capturing moments and events through my lens. I focus on event photography and creative shots that tell stories.",
+      technologies: ["Photography", "Editing", "Visual Storytelling"],
+      image: "/lovable-uploads/d04aa748-67a1-478a-b51e-98046710a436.png",
+      link: "https://www.instagram.com/stories.of_albin"
     }
+  ],
+  
+  languages: [
+    { name: "Malayalam", proficiency: "Native", skills: ["Read", "Write", "Speak"] },
+    { name: "English", proficiency: "Fluent", skills: ["Read", "Write", "Speak"] },
+    { name: "Tamil", proficiency: "Basic", skills: ["Speak"] }
+  ],
+
+  hobbies: [
+    { name: "Photography", description: "Capturing moments through my lens", link: "https://www.instagram.com/stories.of_albin" },
+    { name: "Video Editing", description: "Creating engaging visual content" },
+    { name: "Event Management", description: "Organizing tech events and workshops" },
+    { name: "Coding", description: "Building personal projects" }
   ],
   
   roles: [
@@ -95,6 +116,7 @@ const defaultPortfolioData: PortfolioData = {
     email: "albinbiju@example.com",
     linkedin: "https://linkedin.com/in/albinbiju",
     github: "https://github.com/albinbiju",
+    instagram: "https://www.instagram.com/stories.of_albin"
   }
 };
 

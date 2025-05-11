@@ -22,10 +22,23 @@ export interface Role {
   duration: string;
 }
 
+export interface Language {
+  name: string;
+  proficiency: string;
+  skills: string[];
+}
+
+export interface Hobby {
+  name: string;
+  description: string;
+  link?: string;
+}
+
 export interface ContactInfo {
   email: string;
   linkedin?: string;
   github?: string;
+  instagram?: string;
   other?: Record<string, string>;
 }
 
@@ -36,5 +49,7 @@ export interface PortfolioData {
   skills: Skill[];
   projects: Project[];
   roles: Role[];
+  languages: Language[];
+  hobbies: Hobby[];
   contact: ContactInfo;
 }

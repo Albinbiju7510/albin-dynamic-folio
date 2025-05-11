@@ -1,12 +1,14 @@
 
 import React, { useEffect, useState } from 'react';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePortfolio } from '@/context/PortfolioContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const HeroSection: React.FC = () => {
   const { data } = usePortfolio();
   const [isVisible, setIsVisible] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Delay the animation slightly for dramatic effect
@@ -23,8 +25,58 @@ const HeroSection: React.FC = () => {
     }
   };
 
+  const generateResume = () => {
+    // This would typically generate a PDF or image
+    // For now, we'll just show a toast notification
+    toast({
+      title: "Resume Generated",
+      description: "Your resume has been generated and is ready for download.",
+      duration: 3000,
+    });
+    
+    // Create a text version of the resume
+    const resumeText = `
+# ${data.name}
+${data.title}
+
+## Contact
+Email: ${data.contact.email}
+${data.contact.linkedin ? `LinkedIn: ${data.contact.linkedin}` : ''}
+${data.contact.github ? `GitHub: ${data.contact.github}` : ''}
+${data.contact.instagram ? `Instagram: ${data.contact.instagram}` : ''}
+
+## About
+${data.about}
+
+## Skills
+${data.skills.map(skill => `- ${skill.name}`).join('\n')}
+
+## Experience
+${data.roles.map(role => `### ${role.title} at ${role.organization}\n${role.duration}\n${role.description}`).join('\n\n')}
+
+## Projects
+${data.projects.map(project => `### ${project.title}\n${project.description}\nTechnologies: ${project.technologies.join(', ')}`).join('\n\n')}
+
+## Languages
+${data.languages.map(lang => `- ${lang.name}: ${lang.proficiency} (${lang.skills.join(', ')})`).join('\n')}
+
+## Education
+- BTech in Computer Science Engineering, College of Engineering Aranmula (2021 - Present)
+    `;
+    
+    // Create a Blob and download it
+    const blob = new Blob([resumeText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${data.name.replace(/\s+/g, '_')}_Resume.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-16">
+    <section className="min-h-screen flex flex-col justify-center relative overflow-hidden pt-16 bg-gradient-to-br from-purple-100 to-white dark:from-purple-900/30 dark:to-background">
       {/* Decorative Elements - Circles */}
       <div className="absolute top-1/4 left-10 w-64 h-64 rounded-full bg-purple-300/10 animate-pulse-slow"></div>
       <div className="absolute bottom-1/4 right-10 w-96 h-96 rounded-full bg-purple-400/10 animate-float"></div>
@@ -46,7 +98,12 @@ const HeroSection: React.FC = () => {
               <Button onClick={scrollToAbout} className="bg-purple-500 hover:bg-purple-600">
                 Discover More
               </Button>
-              <Button variant="outline" className="border-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/20">
+              <Button 
+                variant="outline" 
+                className="border-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/20 flex items-center gap-2"
+                onClick={generateResume}
+              >
+                <Download size={16} />
                 Download Resume
               </Button>
             </div>

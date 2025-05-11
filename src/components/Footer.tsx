@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Github, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail, Instagram } from 'lucide-react';
 import { usePortfolio } from '@/context/PortfolioContext';
 
 const Footer: React.FC = () => {
@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-purple-600/5 py-12">
+    <footer className="bg-gradient-to-t from-purple-100 to-white dark:from-purple-900/20 dark:to-background py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-6 md:mb-0">
@@ -39,6 +39,17 @@ const Footer: React.FC = () => {
               </a>
             )}
             
+            {data.contact.instagram && (
+              <a 
+                href={data.contact.instagram} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-purple-500 transition-colors"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+            )}
+            
             <a 
               href={`mailto:${data.contact.email}`}
               className="text-muted-foreground hover:text-purple-500 transition-colors"
@@ -60,19 +71,14 @@ const Footer: React.FC = () => {
             <a href="#projects" className="text-sm text-muted-foreground hover:text-purple-500 transition-colors mx-3">
               Projects
             </a>
+            <a href="#languages" className="text-sm text-muted-foreground hover:text-purple-500 transition-colors mx-3">
+              Languages
+            </a>
             <a href="#contact" className="text-sm text-muted-foreground hover:text-purple-500 transition-colors mx-3">
               Contact
             </a>
           </div>
         </div>
-      </div>
-
-      {/* Secret link to admin panel */}
-      <div className="admin-link">
-        <div 
-          className="secret-button"
-          onClick={() => window.location.href = '/admin'}
-        ></div>
       </div>
     </footer>
   );
