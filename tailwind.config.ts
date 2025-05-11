@@ -2,7 +2,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-	darkMode: ["class"],
+	darkMode: ["class", ".dark", ".hacker"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
@@ -70,6 +70,17 @@ export default {
 					400: "#8B5CF6",
 					500: "#7E69AB",
 					600: "#1A1F2C",
+				},
+				green: {
+					100: "#DCFCE7",
+					200: "#BBF7D0",
+					300: "#86EFAC",
+					400: "#4ADE80",
+					500: "#22C55E",
+					600: "#16A34A",
+					700: "#15803D",
+					800: "#166534",
+					900: "#14532D",
 				}
 			},
 			borderRadius: {
@@ -126,6 +137,14 @@ export default {
 					'0%': { transform: 'scale(0.8)', opacity: '0' },
 					'100%': { transform: 'scale(1)', opacity: '1' }
 				},
+				'typing': {
+					'from': { width: '0' },
+					'to': { width: '100%' }
+				},
+				'blink': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0' }
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -138,6 +157,8 @@ export default {
 				'slide-in-right': 'slide-in-right 0.6s ease-out',
 				'rotate-slow': 'rotate-slow 12s linear infinite',
 				'scale-up': 'scale-up 0.5s ease-out',
+				'typing': 'typing 3.5s steps(40, end)',
+				'blink': 'blink 1s step-end infinite'
 			}
 		}
 	},

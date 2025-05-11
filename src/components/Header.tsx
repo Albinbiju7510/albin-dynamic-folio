@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { usePortfolio } from '@/context/PortfolioContext';
-import { Menu, X, Github, Linkedin, Mail } from 'lucide-react';
+import { Menu, X, Github, Linkedin, Mail, Instagram, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/hooks/use-theme';
 
 const Header: React.FC = () => {
   const { data } = usePortfolio();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +26,10 @@ const Header: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
       setIsMenuOpen(false);
     }
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -83,6 +89,19 @@ const Header: React.FC = () => {
 
         {/* Social Icons - Desktop */}
         <div className="hidden md:flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="text-foreground/70 hover:text-purple-500"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
+          
           {data.contact.github && (
             <a href={data.contact.github} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
               <Github className="h-5 w-5" />
@@ -91,6 +110,11 @@ const Header: React.FC = () => {
           {data.contact.linkedin && (
             <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
               <Linkedin className="h-5 w-5" />
+            </a>
+          )}
+          {data.contact.instagram && (
+            <a href={data.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+              <Instagram className="h-5 w-5" />
             </a>
           )}
           <a href={`mailto:${data.contact.email}`} className="text-foreground/70 hover:text-purple-500 transition-colors">
@@ -134,6 +158,25 @@ const Header: React.FC = () => {
               Contact
             </button>
             
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleTheme}
+              className="flex items-center justify-start px-0 py-2 text-foreground/80 hover:text-purple-500"
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="h-5 w-5 mr-2" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="h-5 w-5 mr-2" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </Button>
+            
             {/* Social Icons - Mobile */}
             <div className="flex items-center space-x-4 pt-2">
               {data.contact.github && (
@@ -144,6 +187,11 @@ const Header: React.FC = () => {
               {data.contact.linkedin && (
                 <a href={data.contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
                   <Linkedin className="h-5 w-5" />
+                </a>
+              )}
+              {data.contact.instagram && (
+                <a href={data.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-foreground/70 hover:text-purple-500 transition-colors">
+                  <Instagram className="h-5 w-5" />
                 </a>
               )}
               <a href={`mailto:${data.contact.email}`} className="text-foreground/70 hover:text-purple-500 transition-colors">
