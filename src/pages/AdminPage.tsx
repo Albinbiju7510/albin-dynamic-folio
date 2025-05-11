@@ -81,11 +81,11 @@ const AdminPanel = () => {
               ></div>
             </div>
             <div className="font-mono text-sm text-green-500">
-              <p>> Loading modules... {Math.min(Math.floor(loadingProgress * 1.5), 100)}%</p>
-              {loadingProgress > 30 && <p>> Establishing secure connection...</p>}
-              {loadingProgress > 60 && <p>> Decrypting portfolio data...</p>}
-              {loadingProgress > 80 && <p>> Preparing administration tools...</p>}
-              {loadingProgress >= 100 && <p>> Access granted. Welcome back, Administrator.</p>}
+              <p>{"> "}Loading modules... {Math.min(Math.floor(loadingProgress * 1.5), 100)}%</p>
+              {loadingProgress > 30 && <p>{"> "}Establishing secure connection...</p>}
+              {loadingProgress > 60 && <p>{"> "}Decrypting portfolio data...</p>}
+              {loadingProgress > 80 && <p>{"> "}Preparing administration tools...</p>}
+              {loadingProgress >= 100 && <p>{"> "}Access granted. Welcome back, Administrator.</p>}
             </div>
           </div>
         ) : (
