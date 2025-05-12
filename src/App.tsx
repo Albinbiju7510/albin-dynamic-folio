@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 import ModeDashboard from "./pages/ModeDashboard";
+import { PortfolioProvider } from "./context/PortfolioContext";
 
 const queryClient = new QueryClient();
 
@@ -18,20 +19,22 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <TranslationProvider>
-        <TooltipPrimitive.Provider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/mode/:modeId" element={<ModeDashboard />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AnimatePresence>
-          </BrowserRouter>
-        </TooltipPrimitive.Provider>
+        <PortfolioProvider>
+          <TooltipPrimitive.Provider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AnimatePresence mode="wait">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/admin" element={<AdminPage />} />
+                  <Route path="/mode/:modeId" element={<ModeDashboard />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </AnimatePresence>
+            </BrowserRouter>
+          </TooltipPrimitive.Provider>
+        </PortfolioProvider>
       </TranslationProvider>
     </ThemeProvider>
   </QueryClientProvider>
