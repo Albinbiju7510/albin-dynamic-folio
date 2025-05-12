@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -14,6 +15,11 @@ interface ModeOption {
   path: string;
   color: string;
   description: string;
+  animation: {
+    rotate?: number;
+    scale?: number[];
+    y?: number;
+  };
 }
 
 const ModeSelector: React.FC<ModeSelectorProps> = ({ className = '' }) => {
@@ -26,47 +32,78 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ className = '' }) => {
       label: translate('Student'),
       path: '/mode/student',
       color: 'bg-blue-500 hover:bg-blue-600',
-      description: translate('Academic journey and achievements')
+      description: translate('Academic journey and achievements'),
+      animation: { rotate: 15, scale: [1, 1.05, 1] }
     },
     {
       icon: <Bell className="h-8 w-8" />,
       label: translate('Volunteer'),
       path: '/mode/volunteer',
       color: 'bg-green-500 hover:bg-green-600',
-      description: translate('Community service and contributions')
+      description: translate('Community service and contributions'),
+      animation: { y: -5, scale: [1, 1.1, 1] }
     },
     {
       icon: <Film className="h-8 w-8" />,
       label: translate('Content Creator'),
       path: '/mode/creator',
       color: 'bg-red-500 hover:bg-red-600',
-      description: translate('Videos, reels, and creative works')
+      description: translate('Videos, reels, and creative works'),
+      animation: { rotate: -10, scale: [1, 1.05, 1] }
     },
     {
       icon: <Code className="h-8 w-8" />,
       label: translate('Developer'),
       path: '/mode/developer',
       color: 'bg-purple-500 hover:bg-purple-600',
-      description: translate('Projects and technical skills')
+      description: translate('Projects and technical skills'),
+      animation: { y: 5, scale: [1, 1.1, 1] }
     },
     {
       icon: <Mic className="h-8 w-8" />,
       label: translate('Host'),
       path: '/mode/host',
       color: 'bg-yellow-500 hover:bg-yellow-600',
-      description: translate('Events, speaking, and presentations')
+      description: translate('Events, speaking, and presentations'),
+      animation: { rotate: 10, scale: [1, 1.05, 1] }
     },
     {
       icon: <Star className="h-8 w-8" />,
       label: translate('Dreamer'),
       path: '/mode/dreamer',
       color: 'bg-indigo-500 hover:bg-indigo-600',
-      description: translate('Goals, aspirations, and future visions')
+      description: translate('Goals, aspirations, and future visions'),
+      animation: { y: -5, scale: [1, 1.1, 1] }
     }
   ];
 
   const handleModeSelect = (path: string) => {
-    navigate(path);
+    // Animate before navigation
+    document.body.classList.add('page-transition');
+    setTimeout(() => {
+      navigate(path);
+      setTimeout(() => {
+        document.body.classList.remove('page-transition');
+      }, 500);
+    }, 300);
+  };
+
+  // Container variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  // Item variants for individual animations
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
   };
 
   return (
@@ -85,15 +122,22 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ className = '' }) => {
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <motion.div 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+      >
         {modes.map((mode, index) => (
           <motion.div
             key={mode.path}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            variants={itemVariants}
+            whileHover={{
+              ...mode.animation,
+              transition: { duration: 0.3, yoyo: Infinity }
+            }}
             onClick={() => handleModeSelect(mode.path)}
-            className={`${mode.color} text-white rounded-xl p-6 shadow-lg cursor-pointer transition-transform duration-300 transform hover:scale-105 hover:shadow-xl flex flex-col items-center`}
+            className={`${mode.color} text-white rounded-xl p-6 shadow-lg cursor-pointer transition-transform duration-300 transform hover:shadow-xl flex flex-col items-center`}
           >
             <motion.div 
               whileHover={{ rotate: 360 }}
@@ -106,7 +150,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ className = '' }) => {
             <p className="text-white/80 text-sm">{mode.description}</p>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

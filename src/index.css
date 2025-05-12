@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -107,12 +109,17 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  h1, h2, h3, .font-heading {
+    font-family: 'Playfair Display', serif;
   }
 }
 
 @layer components {
   .section-title {
-    @apply text-3xl md:text-4xl font-bold mb-6 text-purple-500 relative inline-block;
+    @apply text-3xl md:text-4xl font-bold mb-6 text-purple-500 relative inline-block font-heading;
   }
 
   .section-title::after {
@@ -190,5 +197,70 @@
   @keyframes blink {
     from, to { opacity: 1 }
     50% { opacity: 0 }
+  }
+  
+  /* Page transition animations */
+  .page-transition {
+    animation: page-transition 0.3s ease-in-out;
+  }
+  
+  @keyframes page-transition {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  /* Float animation */
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Pulse slow animation */
+  @keyframes pulse-slow {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse-slow 8s ease-in-out infinite;
+  }
+  
+  /* Rotate slow animation */
+  @keyframes rotate-slow {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .animate-rotate-slow {
+    animation: rotate-slow 30s linear infinite;
   }
 }

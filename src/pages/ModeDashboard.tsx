@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/context/TranslationContext';
 import { usePortfolio } from '@/context/PortfolioContext';
+import MiniGameWrapper from '@/components/games/MiniGameWrapper';
 
 interface ModeConfig {
   title: string;
@@ -257,6 +258,9 @@ const ModeDashboard = () => {
               {renderModeContent()}
             </motion.div>
           </main>
+
+          {/* Add the MiniGame component */}
+          {modeId && <MiniGameWrapper mode={modeId} />}
         </>
       )}
     </motion.div>

@@ -1,9 +1,9 @@
-
 import React, { useEffect, useState } from 'react';
 import { ArrowDown, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePortfolio } from '@/context/PortfolioContext';
 import { useToast } from '@/components/ui/use-toast';
+import { jsPDF } from 'jspdf';
 
 const HeroSection: React.FC = () => {
   const { data } = usePortfolio();
@@ -26,53 +26,165 @@ const HeroSection: React.FC = () => {
   };
 
   const generateResume = () => {
-    // This would typically generate a PDF or image
-    // For now, we'll just show a toast notification
     toast({
-      title: "Resume Generated",
-      description: "Your resume has been generated and is ready for download.",
+      title: "Generating PDF Resume",
+      description: "Please wait while your resume is being generated...",
       duration: 3000,
     });
     
-    // Create a text version of the resume
-    const resumeText = `
-# ${data.name}
-${data.title}
-
-## Contact
-Email: ${data.contact.email}
-${data.contact.linkedin ? `LinkedIn: ${data.contact.linkedin}` : ''}
-${data.contact.github ? `GitHub: ${data.contact.github}` : ''}
-${data.contact.instagram ? `Instagram: ${data.contact.instagram}` : ''}
-
-## About
-${data.about}
-
-## Skills
-${data.skills.map(skill => `- ${skill.name}`).join('\n')}
-
-## Experience
-${data.roles.map(role => `### ${role.title} at ${role.organization}\n${role.duration}\n${role.description}`).join('\n\n')}
-
-## Projects
-${data.projects.map(project => `### ${project.title}\n${project.description}\nTechnologies: ${project.technologies.join(', ')}`).join('\n\n')}
-
-## Languages
-${data.languages.map(lang => `- ${lang.name}: ${lang.proficiency} (${lang.skills.join(', ')})`).join('\n')}
-
-## Education
-- BTech in Computer Science Engineering, College of Engineering Aranmula (2021 - Present)
-    `;
-    
-    // Create a Blob and download it
-    const blob = new Blob([resumeText], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${data.name.replace(/\s+/g, '_')}_Resume.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // Create a new PDF document
+      const doc = new jsPDF();
+      
+      // Set font styles
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(20);
+      doc.setTextColor(128, 0, 128); // Purple color
+      
+      // Add header/name
+      doc.text(data.name, 105, 20, { align: "center" });
+      
+      // Set normal font for content
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      
+      // Add title/profession
+      doc.text(data.title, 105, 30, { align: "center" });
+      
+      // Add contact info
+      doc.setFontSize(10);
+      doc.text(`Email: ${data.contact.email}`, 105, 40, { align: "center" });
+      if (data.contact.linkedin) {
+        doc.text(`LinkedIn: ${data.contact.linkedin}`, 105, 45, { align: "center" });
+      }
+      if (data.contact.github) {
+        doc.text(`GitHub: ${data.contact.github}`, 105, 50, { align: "center" });
+      }
+      
+      // Add a divider
+      doc.setDrawColor(128, 0, 128);
+      doc.setLineWidth(0.5);
+      doc.line(20, 55, 190, 55);
+      
+      // About section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(128, 0, 128);
+      doc.text("About", 20, 65);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      
+      // Split long text into multiple lines
+      const aboutLines = doc.splitTextToSize(data.about, 170);
+      doc.text(aboutLines, 20, 75);
+      
+      // Calculate vertical position after about text
+      const aboutEndY = 75 + (aboutLines.length * 5);
+      
+      // Skills section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(128, 0, 128);
+      doc.text("Skills", 20, aboutEndY + 10);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      
+      // Group skills by category
+      const skillCategories = {
+        programming: data.skills.filter(s => s.category === 'programming'),
+        technology: data.skills.filter(s => s.category === 'technology'),
+        tool: data.skills.filter(s => s.category === 'tool'),
+        soft: data.skills.filter(s => s.category === 'soft')
+      };
+      
+      let skillY = aboutEndY + 20;
+      
+      // List skills by category
+      for (const [category, skills] of Object.entries(skillCategories)) {
+        if (skills.length > 0) {
+          doc.setFont("helvetica", "italic");
+          doc.text(category.charAt(0).toUpperCase() + category.slice(1) + ":", 20, skillY);
+          doc.setFont("helvetica", "normal");
+          
+          const skillNames = skills.map(s => s.name).join(", ");
+          const skillLines = doc.splitTextToSize(skillNames, 170);
+          doc.text(skillLines, 30, skillY + 5);
+          
+          skillY += (skillLines.length * 5) + 10;
+        }
+      }
+      
+      // Projects section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(128, 0, 128);
+      doc.text("Projects", 20, skillY + 5);
+      
+      let projectY = skillY + 15;
+      
+      // Add projects (limited to keep resume on one page)
+      const projectsToShow = data.projects.slice(0, 3); // Show first 3 projects
+      
+      projectsToShow.forEach((project, index) => {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text(project.title, 20, projectY);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        const descLines = doc.splitTextToSize(project.description, 170);
+        doc.text(descLines, 20, projectY + 5);
+        
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "italic");
+        doc.text(`Technologies: ${project.technologies.join(", ")}`, 20, projectY + 5 + (descLines.length * 5));
+        
+        projectY += 20 + (descLines.length * 5);
+      });
+      
+      // Education section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(128, 0, 128);
+      doc.text("Education", 20, projectY + 5);
+      
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      doc.text("BTech in Computer Science Engineering", 20, projectY + 15);
+      doc.setFontSize(10);
+      doc.text("College of Engineering Aranmula (2021 - Present)", 20, projectY + 20);
+      
+      // Add footer with date
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
+      const today = new Date();
+      doc.text(`Generated on ${today.toLocaleDateString()}`, 105, 285, { align: "center" });
+      
+      // Save the PDF
+      doc.save(`${data.name.replace(/\s+/g, '_')}_Resume.pdf`);
+      
+      toast({
+        title: "Resume Generated",
+        description: "Your PDF resume has been created and downloaded.",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF resume. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    }
   };
 
   return (

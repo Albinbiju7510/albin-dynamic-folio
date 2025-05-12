@@ -5,9 +5,10 @@ import { PortfolioData, Project } from '@/types/portfolio';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Image, Upload, X, Check } from 'lucide-react';
+import { Image, Upload, X, Check, User, FileImage } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useTheme } from '@/hooks/use-theme';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ImageManagementPanelProps {
   data: PortfolioData;
@@ -17,9 +18,11 @@ interface ImageManagementPanelProps {
 const ImageManagementPanel: React.FC<ImageManagementPanelProps> = ({ data, onChange }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState('/lovable-uploads/ab897175-147a-4b6b-bc35-be0d1894c521.png');
+  const [activeTab, setActiveTab] = useState('projects');
   const { toast } = useToast();
   const { theme } = useTheme();
-  
+
   const handleImageUpload = (projectId: string) => {
     if (!imageUrl.trim()) {
       toast({
@@ -54,6 +57,29 @@ const ImageManagementPanel: React.FC<ImageManagementPanelProps> = ({ data, onCha
     setImageUrl('');
     setSelectedProject(null);
   };
+
+  const handleProfileImageUpdate = () => {
+    if (!imageUrl.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter an image URL",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setProfileImage(imageUrl);
+    
+    // In a real application, you would update this in the data context
+    // For this demo, we'll just show a toast
+    toast({
+      title: "Profile Image Updated",
+      description: "Your profile image has been updated successfully.",
+      duration: 3000,
+    });
+    
+    setImageUrl('');
+  };
   
   const isHackerTheme = theme === 'hacker';
   
@@ -65,92 +91,182 @@ const ImageManagementPanel: React.FC<ImageManagementPanelProps> = ({ data, onCha
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <h3 className={`text-lg font-medium ${isHackerTheme ? 'text-green-500 font-mono' : ''}`}>
-            Project Images
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.projects.map(project => (
-              <ProjectImageCard
-                key={project.id}
-                project={project}
-                onSelectProject={(id) => {
-                  setSelectedProject(id === selectedProject ? null : id);
-                  setImageUrl(project.image || '');
-                }}
-                isSelected={selectedProject === project.id}
-                isHackerTheme={isHackerTheme}
-              />
-            ))}
-          </div>
-        </div>
-        
-        {selectedProject && (
-          <div className={`p-4 rounded-md ${isHackerTheme ? 'bg-gray-800 border border-green-500/30' : 'bg-gray-50 dark:bg-gray-800'}`}>
-            <h4 className={`text-md font-medium mb-4 ${isHackerTheme ? 'text-green-500 font-mono' : ''}`}>
-              Update Image for {data.projects.find(p => p.id === selectedProject)?.title}
-            </h4>
-            
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="image-url" className={isHackerTheme ? 'text-green-500 font-mono' : ''}>
-                  Image URL
-                </Label>
-                <Input
-                  id="image-url"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                  className={isHackerTheme ? 'bg-gray-900 border-green-500/30 text-green-500 focus:border-green-500' : ''}
-                />
-              </div>
-              
-              {imageUrl && (
-                <div className="mt-2">
-                  <p className={`text-sm mb-2 ${isHackerTheme ? 'text-green-500 font-mono' : 'text-muted-foreground'}`}>Preview:</p>
-                  <img 
-                    src={imageUrl} 
-                    alt="Preview" 
-                    className="max-h-40 rounded-md object-cover" 
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/placeholder.svg';
-                      toast({
-                        title: "Image Error",
-                        description: "Could not load the image preview. Please check the URL.",
-                        variant: "destructive",
-                      });
-                    }}
-                  />
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className={`grid grid-cols-2 w-full ${isHackerTheme ? 'bg-gray-900 border border-green-500/30' : ''}`}>
+            <TabsTrigger 
+              value="profile"
+              className={isHackerTheme ? 'data-[state=active]:bg-green-500/20 data-[state=active]:text-green-500' : ''}
+            >
+              Profile Image
+            </TabsTrigger>
+            <TabsTrigger 
+              value="projects"
+              className={isHackerTheme ? 'data-[state=active]:bg-green-500/20 data-[state=active]:text-green-500' : ''}
+            >
+              Project Images
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="profile" className="space-y-4 pt-4">
+            <div className={`p-4 rounded-md ${isHackerTheme ? 'bg-gray-800 border border-green-500/30' : 'bg-gray-50 dark:bg-gray-800'}`}>
+              <div className="flex flex-col md:flex-row gap-6 items-center">
+                <div className="flex-shrink-0">
+                  <div className="relative w-40 h-40 rounded-full overflow-hidden border-4 border-purple-300 dark:border-purple-700 shadow-md mx-auto">
+                    <img 
+                      src={profileImage}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/placeholder.svg';
+                      }}
+                    />
+                  </div>
+                  <p className="text-center mt-2 text-sm text-muted-foreground">Profile Image</p>
                 </div>
-              )}
-              
-              <div className="flex justify-end space-x-2 mt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSelectedProject(null);
-                    setImageUrl('');
-                  }}
-                  className={isHackerTheme ? 'border-green-500/30 text-green-500 hover:bg-green-500/20' : ''}
-                >
-                  <X className="mr-1 h-4 w-4" />
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => handleImageUpload(selectedProject)}
-                  className={isHackerTheme 
-                    ? 'bg-green-500/20 hover:bg-green-500/30 text-green-500 border border-green-500/30' 
-                    : 'bg-purple-500 hover:bg-purple-600'
-                  }
-                >
-                  <Check className="mr-1 h-4 w-4" />
-                  Update Image
-                </Button>
+                
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <Label htmlFor="profile-url" className={isHackerTheme ? 'text-green-500 font-mono' : ''}>
+                      New Profile Image URL
+                    </Label>
+                    <Input
+                      id="profile-url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://example.com/profile.jpg"
+                      className={isHackerTheme ? 'bg-gray-900 border-green-500/30 text-green-500 focus:border-green-500' : ''}
+                    />
+                  </div>
+                  
+                  {imageUrl && (
+                    <div className="mt-2">
+                      <p className={`text-sm mb-2 ${isHackerTheme ? 'text-green-500 font-mono' : 'text-muted-foreground'}`}>Preview:</p>
+                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-300 dark:border-purple-700">
+                        <img 
+                          src={imageUrl} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/placeholder.svg';
+                            toast({
+                              title: "Image Error",
+                              description: "Could not load the image preview. Please check the URL.",
+                              variant: "destructive",
+                            });
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setImageUrl('')}
+                      className={isHackerTheme ? 'border-green-500/30 text-green-500 hover:bg-green-500/20' : ''}
+                    >
+                      <X className="mr-1 h-4 w-4" />
+                      Clear
+                    </Button>
+                    <Button
+                      onClick={handleProfileImageUpdate}
+                      className={isHackerTheme 
+                        ? 'bg-green-500/20 hover:bg-green-500/30 text-green-500 border border-green-500/30' 
+                        : 'bg-purple-500 hover:bg-purple-600'
+                      }
+                    >
+                      <Check className="mr-1 h-4 w-4" />
+                      Update Image
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          </TabsContent>
+
+          <TabsContent value="projects" className="space-y-4 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {data.projects.map(project => (
+                <ProjectImageCard
+                  key={project.id}
+                  project={project}
+                  onSelectProject={(id) => {
+                    setSelectedProject(id === selectedProject ? null : id);
+                    setImageUrl(project.image || '');
+                  }}
+                  isSelected={selectedProject === project.id}
+                  isHackerTheme={isHackerTheme}
+                />
+              ))}
+            </div>
+            
+            {selectedProject && (
+              <div className={`p-4 rounded-md ${isHackerTheme ? 'bg-gray-800 border border-green-500/30' : 'bg-gray-50 dark:bg-gray-800'}`}>
+                <h4 className={`text-md font-medium mb-4 ${isHackerTheme ? 'text-green-500 font-mono' : ''}`}>
+                  Update Image for {data.projects.find(p => p.id === selectedProject)?.title}
+                </h4>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="image-url" className={isHackerTheme ? 'text-green-500 font-mono' : ''}>
+                      Image URL
+                    </Label>
+                    <Input
+                      id="image-url"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className={isHackerTheme ? 'bg-gray-900 border-green-500/30 text-green-500 focus:border-green-500' : ''}
+                    />
+                  </div>
+                  
+                  {imageUrl && (
+                    <div className="mt-2">
+                      <p className={`text-sm mb-2 ${isHackerTheme ? 'text-green-500 font-mono' : 'text-muted-foreground'}`}>Preview:</p>
+                      <img 
+                        src={imageUrl} 
+                        alt="Preview" 
+                        className="max-h-40 rounded-md object-cover" 
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/placeholder.svg';
+                          toast({
+                            title: "Image Error",
+                            description: "Could not load the image preview. Please check the URL.",
+                            variant: "destructive",
+                          });
+                        }}
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-end space-x-2 mt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedProject(null);
+                        setImageUrl('');
+                      }}
+                      className={isHackerTheme ? 'border-green-500/30 text-green-500 hover:bg-green-500/20' : ''}
+                    >
+                      <X className="mr-1 h-4 w-4" />
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => handleImageUpload(selectedProject)}
+                      className={isHackerTheme 
+                        ? 'bg-green-500/20 hover:bg-green-500/30 text-green-500 border border-green-500/30' 
+                        : 'bg-purple-500 hover:bg-purple-600'
+                      }
+                    >
+                      <Check className="mr-1 h-4 w-4" />
+                      Update Image
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
