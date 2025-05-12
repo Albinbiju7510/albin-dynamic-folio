@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Book, HandHelp, Film, Code, Mic, Star } from 'lucide-react';
+import { Book, Bell, Film, Code, Mic, Star } from 'lucide-react';
 import { useTranslation } from '@/context/TranslationContext';
 
 interface ModeSelectorProps {
@@ -30,7 +29,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ className = '' }) => {
       description: translate('Academic journey and achievements')
     },
     {
-      icon: <HandHelp className="h-8 w-8" />,
+      icon: <Bell className="h-8 w-8" />,
       label: translate('Volunteer'),
       path: '/mode/volunteer',
       color: 'bg-green-500 hover:bg-green-600',
