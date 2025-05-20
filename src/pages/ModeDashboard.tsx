@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -6,6 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/context/TranslationContext';
 import { usePortfolio } from '@/context/PortfolioContext';
+import { PortfolioProvider } from '@/context/PortfolioContext';
 import MiniGameWrapper from '@/components/games/MiniGameWrapper';
 
 interface ModeConfig {
@@ -54,7 +54,7 @@ const modeConfigs: Record<string, ModeConfig> = {
   }
 };
 
-const ModeDashboard = () => {
+const ModeDashboardContent = () => {
   const { modeId } = useParams<{ modeId: string }>();
   const navigate = useNavigate();
   const { translate } = useTranslation();
@@ -212,7 +212,7 @@ const ModeDashboard = () => {
               }}
               className={`w-16 h-16 rounded-full ${mode.bgClass} shadow-lg mb-4`}
             />
-            <h3 className={`text-xl font-bold ${mode.color}`}>Loading {mode.title}...</h3>
+            <h3 className={`text-xl font-bold font-heading ${mode.color}`}>Loading {mode.title}...</h3>
           </div>
         </div>
       ) : (
@@ -227,7 +227,7 @@ const ModeDashboard = () => {
                 >
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
-                <h1 className={`text-xl font-bold ${mode.color}`}>
+                <h1 className={`text-xl font-bold font-heading ${mode.color}`}>
                   {translate(mode.title)}
                 </h1>
               </div>
@@ -247,7 +247,7 @@ const ModeDashboard = () => {
               className="max-w-4xl mx-auto"
             >
               <div className="text-center mb-12">
-                <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${mode.color}`}>
+                <h2 className={`text-3xl md:text-4xl font-bold mb-4 font-heading ${mode.color}`}>
                   {translate(mode.title)}
                 </h2>
                 <p className="text-lg text-gray-600 dark:text-gray-300">
@@ -264,6 +264,15 @@ const ModeDashboard = () => {
         </>
       )}
     </motion.div>
+  );
+};
+
+// Wrap the component with PortfolioProvider
+const ModeDashboard = () => {
+  return (
+    <PortfolioProvider>
+      <ModeDashboardContent />
+    </PortfolioProvider>
   );
 };
 
